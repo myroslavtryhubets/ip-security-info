@@ -9,7 +9,9 @@ def get_key():
         file_lines = read_file.read().splitlines()
         return random.choice(file_lines)
 
-logging.basicConfig(level=logging.INFO)
+
+logging.basicConfig(filename='ip-security-info.log', level=logging.INFO)
+
 
 class IFetchUrl(ABC):
 
@@ -25,16 +27,17 @@ class IFetchUrl(ABC):
 class FetchUrl(IFetchUrl):
 
     def get_data(self, ip: str) -> dict:
+        
         url = 'https://www.virustotal.com/vtapi/v2/ip-address/report'
         params = {
-            'apikey': get_key(), 'ip': ip}
+            'apikey': get_key(), 'ip': ip
+        }
         response = requests.get(url, params=params)
         data = response.json()
         return data
 
     def get_headers(self, data: dict) -> dict:
         return data["headers"]
-
 
 class ExcFetchUrl(IFetchUrl):
 
@@ -82,4 +85,4 @@ if __name__ == "__main__":
         ipaddress = input("ip address - ")
         data = fetch.get_data(ipaddress)
         pprint(data)
-        print(f"Cache Info: {fetch.get_data.cache_info()}")
+        logging.info(f"Cache Info: {fetch.get_data.cache_info()}")
